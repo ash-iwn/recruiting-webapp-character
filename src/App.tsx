@@ -4,10 +4,27 @@ import { ATTRIBUTE_LIST, CLASS_LIST, SKILL_LIST } from './consts.js';
 import Character from './components/Character';
 import React, {Component} from 'react';
 
+export interface CheckResults { 
+  character: number,
+  skill: string,
+  roll: number,
+  dc: number,
+  result: string
+}
+
 
 function App() {
   const [num, setNum] = useState<number>(0);
   const [characterList, setCharacterList] = useState([]);
+
+  const [checkResultState, setCheckResultState] = useState<CheckResults>({
+    character: null,
+    skill: null,
+    roll: null,
+    dc: null,
+    result: null
+  });
+
   let characterCount = 0;
 
   const containerStyle = {
@@ -18,7 +35,7 @@ function App() {
 
   const onAddCharacter = (event) => {
     setNum(num+1);
-    setCharacterList(characterList.concat(<Character key={num+1} id={num+1} ></Character>))
+    setCharacterList(characterList.concat(<Character key={num+1} id={num+1} checkResult={setCheckResultState} currState={checkResultState} ></Character>))
   }
   
   return (
@@ -34,11 +51,11 @@ function App() {
         <div className="container">
           <h1>Skill Check Results</h1>
           <ul className="list-group">
-            <li key="1" className="list-group-item">Character: </li>
-            <li key="2"  className="list-group-item">Skill: </li>
-            <li key="3" className="list-group-item">You Rolled: </li>
-            <li key="4" className="list-group-item">The DC was: </li>
-            <li key="5" className="list-group-item">Result: </li>
+            <li key="1" className="list-group-item">Character: <span defaultValue={checkResultState.character}>{checkResultState.character}</span></li>
+            <li key="2"  className="list-group-item">Skill: <span defaultValue={checkResultState.skill}></span>{checkResultState.skill} </li>
+            <li key="3" className="list-group-item">You Rolled: <span defaultValue={checkResultState.roll}></span>{checkResultState.roll} </li>
+            <li key="4" className="list-group-item">The DC was: <span defaultValue={checkResultState.dc}></span>{checkResultState.dc} </li>
+            <li key="5" className="list-group-item">Result: <span defaultValue={checkResultState.result}></span>{checkResultState.result} </li>
           </ul>
         </div>
 

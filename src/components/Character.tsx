@@ -3,12 +3,21 @@ import { useState } from "react";
 import { SKILL_LIST, CLASS_LIST, ATTRIBUTE_LIST, SkillProps } from "../consts"
 import ClassRequirement, { AttributeProps } from "./ClassRequirement"
 import { Attributes } from "../types";
+import { CheckResults } from "../App";
+
 interface Props {
-    id: number
+    id: number,
+    checkResult: React.Dispatch<React.SetStateAction<CheckResults>>
+    currState: CheckResults
+}
+
+interface SkillCheckProps {
+    skill: string,
+    dc: number,
 }
 
 
-function Character({id}:Props) {
+function Character({id, checkResult, currState}:Props) {
     const containerStyle = {
         border: 'solid'
     }
@@ -64,6 +73,11 @@ function Character({id}:Props) {
         'Survival': 0
     });
 
+    const [skillCheckState, setSkillCheckState] = useState<SkillCheckProps>({
+        skill: 'Acrobatics',
+        dc: 20
+    });
+
     function calculateModifier(attributeVal:number):number {
         return attributeVal >= 10 ? Math.floor((attributeVal-10)/2): Math.floor((attributeVal-10)/2);
     }
@@ -113,6 +127,30 @@ function Character({id}:Props) {
         return SkillSum;
     }
 
+    function updateSkillCheckDC(event) {
+        setSkillCheckState(prevState => ({...prevState, dc: Number(event.target.value) }));
+    }
+
+    function updateSkillCheckSkill(event) {
+        setSkillCheckState(prevState => ({...prevState, skill: event.target.value }));
+    }
+
+    function roll(event) {
+       
+
+        const character:number = id;
+        const skill:string = `${skillCheckState.skill} : ${currentSkillState[skillCheckState.skill]}`
+        const roll:number = Math.floor(Math.random()*20);
+        const dc:number = skillCheckState.dc;
+
+        const result:string = currentSkillState[skillCheckState.skill] + roll >= dc ? 'Success' : 'Failure';
+
+
+        checkResult(prevState => {
+            return {character, skill, roll, dc, result}
+        });
+    }
+
     function isClass( prop:string ):boolean {
         let record = CLASS_LIST[prop];
 
@@ -150,18 +188,18 @@ function Character({id}:Props) {
                 <div className="row" >
                     <div className="col-2">
                         <h4>Skill:</h4>
-                        <select>
+                        <select defaultValue={'Acrobatics'} onChange={updateSkillCheckSkill}>
                             {SKILL_LIST.map((skill, index) => (
-                                <option key={index}>{skill.name}</option>
+                                <option key={index} value={skill.name}>{skill.name}</option>
                             ))}
                         </select>
                     </div>
                    
                     <div className="col-2">
-                    <h4>DC:</h4><input type='number'></input>
+                    <h4>DC:</h4><input type='number' defaultValue={skillCheckState.dc} onChange={updateSkillCheckDC}></input>
                     </div>
 
-                    <button className="col-2" >Roll</button>
+                    <button className="col-2" onClick={roll} >Roll</button>
 
                    
                 </div>
