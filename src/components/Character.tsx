@@ -41,6 +41,39 @@ const Character = forwardRef(({id, checkResult}:Props, ref) => {
 
         export() {
           return exportCharacter();
+        },
+
+
+        reset() {
+            setAttributeState(prevState => ( {...prevState,
+                Strength: 10,
+                Dexterity: 10,
+                Constitution: 10,
+                Intelligence: 10,
+                Wisdom: 10,
+                Charisma: 10
+            }));
+
+
+            setSkillState(prevState => ({...prevState,
+                'Acrobatics': 0,
+                'Animal Handling': 0,
+                'Arcana': 0,
+                'Athletics': 0,
+                'Deception': 0,
+                'History': 0,
+                'Insight': 0,
+                'Intimidation': 0,
+                'Medicine': 0,
+                'Nature': 0,
+                'Perception': 0,
+                'Performance': 0,
+                'Persuasion': 0,
+                'Religion': 0,
+                'Sleight of Hand': 0,
+                'Stealth': 0,
+                'Survival': 0
+            }));
         }
     
     }));
@@ -205,7 +238,7 @@ const Character = forwardRef(({id, checkResult}:Props, ref) => {
             Charisma: 0
         };
 
-        
+
         Object.keys(CLASS_LIST).forEach(val=> {
             if(isClass(val)) {
                 classArray.push(val);

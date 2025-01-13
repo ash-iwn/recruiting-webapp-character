@@ -64,7 +64,12 @@ const App = () => {
   }
 
 
- 
+  function resetAllCharacters() {
+    characterList.forEach(character => {
+      character.ref.current.reset();
+    })
+
+  }
 
   function onAddCharacter(event) {
     setNum(num+1);
@@ -77,7 +82,7 @@ const App = () => {
       <section className="App-section">
         <div>
           <button onClick={onAddCharacter} >Add New Character</button>
-          <button>Reset All Characters</button>
+          <button onClick={resetAllCharacters}>Reset All Characters</button>
           <button onClick={saveAllCharacters}>Save All Characters</button>
         </div>
 
