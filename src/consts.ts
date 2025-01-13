@@ -36,7 +36,9 @@ export const CLASS_LIST: Record<Class, Attributes> = {
     },
 }
 
-export const SKILL_LIST = [
+export const SKILL_LIST
+
+= [
     { name: 'Acrobatics', attributeModifier: 'Dexterity' },
     { name: 'Animal Handling', attributeModifier: 'Wisdom' },
     { name: 'Arcana', attributeModifier: 'Intelligence' },
@@ -57,3 +59,25 @@ export const SKILL_LIST = [
     { name: 'Survival', attributeModifier: 'Wisdom' },
 
 ]
+
+
+export interface SkillProps  {
+    'Acrobatics': number,
+    'Animal Handling': number,
+    'Arcana': number,
+    'Athletics': number,
+    'Deception': number,
+    'History': number,
+    'Insight': number,
+    'Intimidation': number,
+    'Medicine': number,
+    'Nature': number,
+    'Perception': number,
+    'Performance': number,
+    'Persuasion': number,
+    'Religion': number,
+    'Sleight of Hand': number,
+    'Stealth': number,
+    'Survival': number
+
+} 
