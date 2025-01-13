@@ -4,20 +4,28 @@ import { SKILL_LIST, CLASS_LIST, ATTRIBUTE_LIST, SkillProps } from "../consts"
 import ClassRequirement, { AttributeProps } from "./ClassRequirement"
 import { Attributes } from "../types";
 import { CheckResults } from "../App";
+import { forwardRef, useRef, useImperativeHandle } from "react";
 
 interface Props {
     id: number,
     checkResult: React.Dispatch<React.SetStateAction<CheckResults>>
-    currState: CheckResults
+    
 }
 
-interface SkillCheckProps {
+type SkillCheckProps = {
     skill: string,
     dc: number,
 }
 
+export type CharacterExport = {
+    attributes: AttributeProps,
+    modifiers: AttributeProps,
+    skills: SkillProps,
+    classes: string[]
+}
 
-function Character({id, checkResult, currState}:Props) {
+
+const Character = forwardRef(({id, checkResult}:Props, ref) => {
     const containerStyle = {
         border: 'solid'
     }
@@ -29,12 +37,19 @@ function Character({id, checkResult, currState}:Props) {
         borderBottom: '2px solid #474764'
     }
 
+    useImperativeHandle(ref, () => ({
+
+        export() {
+          return exportCharacter();
+        }
+    
+    }));
+    
+
 
     const isClassStyle = {
         color: 'red'
     }
-
-
 
     const skillModifierStyle = {
         color: '#ac6666'
@@ -176,6 +191,43 @@ function Character({id, checkResult, currState}:Props) {
         return 10+ (4*calculateModifier(Number(currentAttributeState.Intelligence))); 
     }
 
+
+    function exportCharacter():CharacterExport {
+   
+
+        let classArray = [];
+        let mDict:AttributeProps = {
+            Strength: 0,
+            Dexterity: 0,
+            Constitution: 0,
+            Intelligence: 0,
+            Wisdom: 0,
+            Charisma: 0
+        };
+
+        
+        Object.keys(CLASS_LIST).forEach(val=> {
+            if(isClass(val)) {
+                classArray.push(val);
+            }
+        })
+     
+
+        Object.keys(currentAttributeState).forEach( key => {
+            mDict[key] = calculateModifier(currentAttributeState[key])
+        });
+
+        let val:CharacterExport = {
+            attributes : currentAttributeState,
+            skills: currentSkillState,
+            classes: classArray,
+            modifiers: mDict
+        }
+
+        return val;
+
+    }
+
     const [showBarbarianContainer, setShowBarbarianContainer] = useState(false);
     const [showWizardContainer, setShowWizardContainer] = useState(false);
     const [showBardContainer, setshowBardContainer] = useState(false);
@@ -278,6 +330,6 @@ function Character({id, checkResult, currState}:Props) {
            
         </div>
     )
-}
+});
 
 export default Character; 

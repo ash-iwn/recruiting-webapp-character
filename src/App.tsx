@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+
 import './App.css';
 import { ATTRIBUTE_LIST, CLASS_LIST, SKILL_LIST } from './consts.js';
 import Character from './components/Character';
 import React, {Component} from 'react';
+
+
 
 export interface CheckResults { 
   character: number,
@@ -13,9 +16,12 @@ export interface CheckResults {
 }
 
 
-function App() {
+const App = () => {
   const [num, setNum] = useState<number>(0);
   const [characterList, setCharacterList] = useState([]);
+  const [exportedList, setExportedList] = useState([]);
+
+  const childRef = useRef();
 
   const [checkResultState, setCheckResultState] = useState<CheckResults>({
     character: null,
@@ -31,11 +37,38 @@ function App() {
     border: 'solid'
   }
 
+  function saveAllCharacters() {
+    
+
+    let exportList = []
+
+
+    characterList.forEach(character => {
+      exportList.push(character.ref.current.export());
+    })
+
+
+    console.log(exportList);
+
+
+    console.log(JSON.stringify(exportList));
+    
+    fetch('https://recruiting.verylongdomaintotestwith.ca/api/{ash-iwn}/character', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(exportList)
+      })
+  }
+
+
  
 
-  const onAddCharacter = (event) => {
+  function onAddCharacter(event) {
     setNum(num+1);
-    setCharacterList(characterList.concat(<Character key={num+1} id={num+1} checkResult={setCheckResultState} currState={checkResultState} ></Character>))
+    setCharacterList(characterList.concat(<Character key={num+1} id={num+1} checkResult={setCheckResultState} ref={childRef}></Character>))
   }
   
   return (
@@ -45,7 +78,7 @@ function App() {
         <div>
           <button onClick={onAddCharacter} >Add New Character</button>
           <button>Reset All Characters</button>
-          <button>Save All Characters</button>
+          <button onClick={saveAllCharacters}>Save All Characters</button>
         </div>
 
         <div className="container">
